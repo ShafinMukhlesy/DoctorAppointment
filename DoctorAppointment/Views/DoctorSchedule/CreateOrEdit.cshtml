@@ -1,0 +1,68 @@
+﻿@model DoctorAppointment.Models.DoctorSchedule
+
+@{
+    ViewBag.Title = Model.ScheduleId == 0 ? "Create Schedule" : "Edit Schedule";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("CreateOrEdit", "DoctorSchedule", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ScheduleId)
+
+    <div class="form-horizontal shadow p-4 rounded bg-light">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DoctorId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DoctorId", null, "-- Select Doctor --", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DayOfWeek, "Day", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.DayOfWeek,
+                    new SelectList(Enum.GetValues(typeof(DayOfWeek))),
+                    "-- Select Day --", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StartTime)
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.StartTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.EndTime)
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.EndTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.MaxPatients)
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.MaxPatients, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.SlotDuration, "Slot Duration (minutes)")
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.SlotDuration, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+}

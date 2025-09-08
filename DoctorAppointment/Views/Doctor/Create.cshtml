@@ -1,0 +1,100 @@
+﻿@model DoctorAppointment.Models.Doctor
+
+@{
+    ViewBag.Title = "Create Doctor";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Create Doctor</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "Doctor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Name, "Full Name", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter full name" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "doctor@example.com", type = "email" })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", placeholder = "Enter phone number" })
+                        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Specialization, new { @class = "form-control", placeholder = "E.g., Cardiologist" })
+                        @Html.ValidationMessageFor(model => model.Specialization, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.Label("Department", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownList("DepartmentId", null, "-- Select Department --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.Label("Organization", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownList("OrganizationId", null, "-- Select Organization --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.OrganizationId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.Fee, htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Fee, new { @class = "form-control", placeholder = "E.g., Fee" })
+                        @Html.ValidationMessageFor(model => model.Fee, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Picture, "Doctor Picture", new { @class = "form-label" })
+                        <input type="file" name="PictureFile" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.Picture, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <input type="submit" value="Save Doctor" class="btn btn-success me-2" />
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .btn-success {
+        min-width: 120px;
+    }
+</style>

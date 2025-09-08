@@ -1,0 +1,65 @@
+﻿@model IEnumerable<DoctorAppointment.Models.DoctorSchedule>
+
+@{
+    ViewBag.Title = "Doctor Schedules";
+}
+
+<h2>Doctor Schedules</h2>
+
+<p>
+    @Html.ActionLink("Create New Schedule", "CreateOrEdit", null, new { @class = "btn btn-success mb-3" })
+</p>
+
+<table id="scheduleTable" class="table table-striped table-bordered">
+    <thead class="table-primary">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Doctor.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.DayOfWeek)</th>
+            <th>@Html.DisplayNameFor(model => model.StartTime)</th>
+            <th>@Html.DisplayNameFor(model => model.EndTime)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxPatients)</th>
+            <th>@Html.DisplayNameFor(model => model.SlotDuration)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Doctor.Name</td>
+                <td>@item.DayOfWeek</td>
+                <td>@item.StartTime.ToString(@"hh\:mm")</td>
+                <td>@item.EndTime.ToString(@"hh\:mm")</td>
+                <td>@item.MaxPatients</td>
+                <td>@item.SlotDuration</td>
+                <td>
+                    @Html.ActionLink("Edit", "CreateOrEdit", new { id = item.ScheduleId }, new { @class = "btn btn-warning btn-sm" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ScheduleId }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+@section Scripts {
+    <!-- jQuery (only once in _Layout) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#scheduleTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true
+            });
+        });
+    </script>
+}

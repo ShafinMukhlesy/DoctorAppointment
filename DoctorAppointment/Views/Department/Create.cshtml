@@ -1,0 +1,67 @@
+﻿@model DoctorAppointment.Models.Department
+
+@{
+    ViewBag.Title = "Create Department";
+    ViewBag.FormTitle = "Create Department";
+    ViewBag.SubmitText = "Save Department";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">@ViewBag.FormTitle</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Name, "Department Name", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter department name" })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Description, "Description", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "Enter department description" })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.Label("Organization", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownList("OrganizationId", null, "-- Select Organization --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.OrganizationId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <input type="submit" value="@ViewBag.SubmitText" class="btn btn-success me-2" />
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .btn-success {
+        min-width: 120px;
+    }
+</style>
