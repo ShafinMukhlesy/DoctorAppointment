@@ -5,15 +5,17 @@
 <div class="container mt-4">
     <div class="card shadow-lg border-0">
         <div class="card-header bg-primary text-white text-center">
-            <h3 class="mb-0">Book Appointment </h3>
+            <h3 class="mb-0">Book Appointment</h3>
         </div>
         <div class="card-body">
             @using (Html.BeginForm())
             {
+                <input type="hidden" id="SelectedTime" name="AppointmentTime" />
+
                 <div class="row">
                     <!-- Doctor Info Card on Left -->
                     <div class="col-md-4 mb-3">
-                        <div id="doctorDetails" class="card shadow-sm border-0" >
+                        <div id="doctorDetails" class="card shadow-sm border-0">
                             <div class="card-body text-center">
                                 <img id="docImage" src="~/Uploads/Doctors/doctor.png" alt="Doctor Image"
                                      class="img-fluid rounded-circle mb-3 shadow"
@@ -55,12 +57,21 @@
 
                                 <div class="form-group mb-4">
                                     @Html.Label("Appointment Date", new { @class = "form-label fw-bold" })
-                                    <input type="date" name="AppointmentDate" class="form-control" />
+                                    <input type="date" id="AppointmentDate" name="AppointmentDate" class="form-control" />
                                 </div>
 
-                                <button type="submit" class="btn btn-primary px-4">
-                                    Next <i class="bi bi-arrow-right-circle"></i>
-                                </button>
+                                <div id="timeSlotsContainer" class="mt-4">
+                                    <h5 class="mb-3">Select Time Slot</h5>
+                                    <div class="row" id="timeSlotsRow">
+                                        <!-- Time slots will be loaded here dynamically -->
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        Next <i class="bi bi-arrow-right-circle"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,56 +81,112 @@
     </div>
 </div>
 
+<!-- Inline styles so no section Styles is needed -->
+<style>
+    #timeSlotsRow label.btn {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+        #timeSlotsRow label.btn:hover {
+            transform: scale(1.05);
+        }
+
+    #timeSlotsRow input[type=radio]:checked + div {
+        font-weight: bold;
+        color: white;
+        background-color: #0d6efd;
+        border-radius: 6px;
+        padding: 4px;
+    }
+
+    #timeSlotsContainer {
+        display: none;
+    }
+</style>
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    $(document).ready(function () {
-        // Load Departments when Organization changes
-        $("#OrganizationId").change(function () {
-            var orgId = $(this).val();
-            $("#DepartmentId").html('<option>Loading...</option>');
-            $.getJSON('@Url.Action("GetDepartments")', { organizationId: orgId }, function (data) {
-                var options = '<option>-- Select Department --</option>';
-                $.each(data, function (i, dept) {
-                    options += '<option value="' + dept.DepartmentId + '">' + dept.Name + '</option>';
-                });
-                $("#DepartmentId").html(options);
-                $("#DoctorId").html('<option>-- Select Doctor --</option>');
-            });
-        });
+        $(document).ready(function () {
 
-        // Load Doctors when Department changes
-        $("#DepartmentId").change(function () {
-            var deptId = $(this).val();
-            $("#DoctorId").html('<option>Loading...</option>');
-            $.getJSON('@Url.Action("GetDoctors")', { departmentId: deptId }, function (data) {
-                var options = '<option>-- Select Doctor --</option>';
-                $.each(data, function (i, doc) {
-                    options += '<option value="' + doc.DoctorId + '">' + doc.Name + '</option>';
-                });
-                $("#DoctorId").html(options);
-            });
-        });
+            $("#AppointmentDate").change(loadTimeSlots);
 
-        // Load Doctor Details when Doctor changes
-        $("#DoctorId").change(function () {
-            var docId = $(this).val();
-            if (docId && docId !== "-- Select Doctor --") {
-                $.getJSON('@Url.Action("GetDoctorDetails")', { doctorId: docId }, function (data) {
-                    if (data) {
-                        $("#docImage").attr("src", data.Picture || "~/Uploads/Doctors/doctor.png");
-                        $("#docName").text(data.Name);
-                        $("#docSpec").text(data.Specialization);
-                        $("#docFee").text(data.Fee);
-                        $("#docEmail").text(data.Email);
-                        $("#docPhone").text(data.Phone);
-                        $("#doctorDetails").show();
-                    }
+            $(document).on("change", "input[name='AppointmentTime']", function () {
+                $("#SelectedTime").val($(this).val());
+                console.log("Selected Time: " + $(this).val());
+            });
+
+            // Load Departments when Organization changes
+            $("#OrganizationId").change(function () {
+                var orgId = $(this).val();
+                $("#DepartmentId").html('<option>Loading...</option>');
+                $.getJSON('@Url.Action("GetDepartments")', { organizationId: orgId }, function (data) {
+                    var options = '<option>-- Select Department --</option>';
+                    $.each(data, function (i, dept) {
+                        options += '<option value="' + dept.DepartmentId + '">' + dept.Name + '</option>';
+                    });
+                    $("#DepartmentId").html(options);
+                    $("#DoctorId").html('<option>-- Select Doctor --</option>');
                 });
-            } else {
-                $("#doctorDetails").hide();
+            });
+
+            // Load Doctors when Department changes
+            $("#DepartmentId").change(function () {
+                var deptId = $(this).val();
+                $("#DoctorId").html('<option>Loading...</option>');
+                $.getJSON('@Url.Action("GetDoctors")', { departmentId: deptId }, function (data) {
+                    var options = '<option>-- Select Doctor --</option>';
+                    $.each(data, function (i, doc) {
+                        options += '<option value="' + doc.DoctorId + '">' + doc.Name + '</option>';
+                    });
+                    $("#DoctorId").html(options);
+                });
+            });
+
+            // Load Doctor Details when Doctor changes
+            $("#DoctorId").change(function () {
+                var docId = $(this).val();
+                if (docId && docId !== "-- Select Doctor --") {
+                    $.getJSON('@Url.Action("GetDoctorDetails")', { doctorId: docId }, function (data) {
+                        if (data) {
+                            $("#docImage").attr("src", data.Picture || "~/Uploads/Doctors/doctor.png");
+                            $("#docName").text(data.Name);
+                            $("#docSpec").text(data.Specialization);
+                            $("#docFee").text(data.Fee);
+                            $("#docEmail").text(data.Email);
+                            $("#docPhone").text(data.Phone);
+                            $("#doctorDetails").show();
+                        }
+                    });
+                } else {
+                    $("#doctorDetails").hide();
+                }
+            });
+
+            // Load Time Slots when Doctor or Date changes
+            function loadTimeSlots() {
+                var doctorId = $("#DoctorId").val();
+                var date = $("#AppointmentDate").val();
+                if (doctorId && date) {
+                    $.getJSON('@Url.Action("GetAvailableSlotsforPatient")', { doctorId: doctorId, appointmentDate: date }, function (data) {
+                        var slotsHtml = '';
+                        $.each(data.AvailableSlots, function (i, slot) {
+                            var isBooked = data.BookedSlots.includes(slot.Value);
+                            var btnClass = isBooked ? 'btn-danger disabled' : 'btn-outline-primary';
+                            slotsHtml += '<div class="col-2 mb-2">';
+                            slotsHtml += '<label class="btn ' + btnClass + ' w-100 text-center">';
+                            slotsHtml += '<input type="radio" name="AppointmentTime" value="' + slot.Value + '" ' + (isBooked ? 'disabled' : '') + ' />';
+                            slotsHtml += '<div>' + slot.Text + '</div>';
+                            slotsHtml += '</label></div>';
+                        });
+                        $("#timeSlotsRow").html(slotsHtml);
+                        $("#timeSlotsContainer").show();
+                    });
+                }
             }
         });
-    });
     </script>
 }

@@ -17,31 +17,18 @@ namespace DoctorAppointment.Models
         public int DepartmentId { get; set; }
         public int OrganizationId { get; set; }
 
+        public int PatientId { get; set; }
+
+
         [Required]
         public DateTime AppointmentDate { get; set; }
 
         [Required]
         public TimeSpan AppointmentTime { get; set; } // from available slots
 
-        [Required, StringLength(100)]
-        public string PatientName { get; set; }
-
-        [Phone]
-        public string PatientPhone { get; set; }
-
-        [EmailAddress]
-        public string PatientEmail { get; set; }
-
-        // New fields
-        public DateTime? PatientDOB { get; set; }
-
-        [StringLength(10)]
-        public string PatientGender { get; set; }
-
-        [StringLength(250)]
-        public string PatientAddress { get; set; }
-
         // Navigation
+        public virtual Patient Patient { get; set; }
+
         public virtual Doctor Doctor { get; set; }
         public virtual Department Department { get; set; }
         public virtual Organization Organization { get; set; }

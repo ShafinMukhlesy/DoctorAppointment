@@ -19,49 +19,31 @@ namespace DoctorAppointment.Controllers
             ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name");
 
 
+
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult SelectDoctor(int OrganizationId, int DepartmentId, int DoctorId, DateTime AppointmentDate)
+        public ActionResult SelectDoctor(int OrganizationId, int DepartmentId, int DoctorId, DateTime AppointmentDate, string AppointmentTime)
         {
             // Redirect to next step with selected values
-            return RedirectToAction("Create", new { OrganizationId, DepartmentId, DoctorId, AppointmentDate });
+            return RedirectToAction("Create", new { OrganizationId, DepartmentId, DoctorId, AppointmentDate,AppointmentTime });
         }
 
         // Step 2 - Fill patient info
-        public ActionResult Create(int OrganizationId, int DepartmentId, int DoctorId, DateTime AppointmentDate)
+        public ActionResult Create(int OrganizationId, int DepartmentId, int DoctorId, DateTime AppointmentDate, string AppointmentTime)
         {
             var model = new Appointment
             {
                 OrganizationId = OrganizationId,
                 DepartmentId = DepartmentId,
                 DoctorId = DoctorId,
-                AppointmentDate = AppointmentDate
+                AppointmentDate = AppointmentDate,
+                AppointmentTime = TimeSpan.Parse(AppointmentTime)  // convert string to TimeSpan
             };
 
-            // TODO: Load available slots from DoctorSchedule
-            //ViewBag.AvailableSlots = GetAvailableSlots(DoctorId, AppointmentDate);
-
-            var allSlots = GetAvailableSlots(DoctorId, AppointmentDate)
-                           .Select(t => new SelectListItem
-                           {
-                               Value = t.ToString(@"hh\:mm"),
-                               Text = DateTime.Today.Add(t).ToString("hh:mm tt")
-                           })
-                           .ToList();
-
-            // Get already booked slots for this doctor/date
-            var bookedSlots = db.Appointments
-                                .Where(a => a.DoctorId == DoctorId && a.AppointmentDate == AppointmentDate)
-                                .Select(a => a.AppointmentTime)
-                                .ToList();
-
-            // Pass both lists to the view
-            ViewBag.AvailableSlots = allSlots;
-            ViewBag.BookedSlots = bookedSlots;
-
-
+            ViewBag.PatientId = new SelectList(db.Patients, "PatientId", "FirstName");
 
             return View(model);
         }
@@ -144,25 +126,20 @@ namespace DoctorAppointment.Controllers
             return Json(doctor, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetPatientByPhone(string phone)
+        public JsonResult GetAvailableSlotsforPatient(int doctorId, DateTime appointmentDate)
         {
-            var patient = db.Appointments
-                .Where(a => a.PatientPhone == phone)
-                .OrderByDescending(a => a.AppointmentDate)
-                .Select(a => new
-                {
-                    a.PatientName,
-                    a.PatientEmail,
-                    a.PatientDOB,
-                    a.PatientGender,
-                    a.PatientAddress
-                })
-                .FirstOrDefault();
+            var allSlots = GetAvailableSlots(doctorId, appointmentDate)
+                           .Select(t => new { Value = t.ToString(@"hh\:mm"), Text = DateTime.Today.Add(t).ToString("hh:mm tt") })
+                           .ToList();
 
-            if (patient == null)
-                return Json(new { found = false }, JsonRequestBehavior.AllowGet);
+            var bookedSlots = db.Appointments
+                         .Where(a => a.DoctorId == doctorId && a.AppointmentDate == appointmentDate)
+                         .Select(a => a.AppointmentTime)  // keep as TimeSpan
+                         .ToList()                        // bring into memory
+                         .Select(t => t.ToString(@"hh\:mm")) // now safe to format
+                         .ToList();
 
-            return Json(new { found = true, patient }, JsonRequestBehavior.AllowGet);
+            return Json(new { AvailableSlots = allSlots, BookedSlots = bookedSlots }, JsonRequestBehavior.AllowGet);
         }
 
 

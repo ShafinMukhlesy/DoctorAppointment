@@ -1,0 +1,111 @@
+﻿@model DoctorAppointment.Models.Patient
+
+@{
+    var isEdit = Model.PatientId > 0;
+    ViewBag.Title = isEdit ? "Edit Patient" : "Create Patient";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">@ViewBag.Title</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("CreateEdit", "Patient", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.PatientId)
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.FirstName, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Enter first name" })
+                        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.LastName, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Enter last name" })
+                        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Enter phone number" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Enter email" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Gender, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "-- Select Gender --", new { @class = "form-select" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.DateOfBirth, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date" })
+                    </div>
+
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Weight, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", type = "number", step = "0.1", placeholder = "kg" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Height, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Height, new { @class = "form-control", placeholder = "0'0" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.BloodGroup, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.BloodGroup, new { @class = "form-control", placeholder = "A+, O-, AB+" })
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Address, new { @class = "form-label" })
+                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 2 })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.MedicalHistory, new { @class = "form-label" })
+                    @Html.TextAreaFor(m => m.MedicalHistory, new { @class = "form-control", rows = 3 })
+                </div>
+
+                @*<div class="mb-3">
+                    @Html.Label("Upload Patient Image", new { @class = "form-label" })
+                    <input type="file" name="ImageFile" class="form-control" />
+                </div>*@
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.Label("Picture", new { @class = "form-label" })
+                        <input type="file" name="ImageFile" class="form-control" />
+                        @if (!string.IsNullOrEmpty(Model.PatientImage))
+                        {
+                            <img src="@Url.Content(Model.PatientImage)" width="100" class="img-thumbnail mt-2" />
+                        }
+                        @Html.ValidationMessageFor(m => m.PatientImage, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success me-2">
+                        @(isEdit ? "Update Patient" : "Save Patient")
+                    </button>
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -21,77 +21,13 @@
                 @Html.HiddenFor(m => m.DepartmentId)
                 @Html.HiddenFor(m => m.DoctorId)
                 @Html.HiddenFor(m => m.AppointmentDate)
-
-                <!-- Time Slots -->
-                <div class="form-group mb-4">
-                    @Html.Label("Select Time Slot", htmlAttributes: new { @class = "form-label fw-semibold" })
-                    <div class="row">
-                        @foreach (var slot in (IEnumerable<SelectListItem>)ViewBag.AvailableSlots)
-                        {
-                            var isBooked = ((List<TimeSpan>)ViewBag.BookedSlots).Contains(TimeSpan.Parse(slot.Value));
-                            var btnClass = isBooked ? "btn-danger disabled" : "btn-outline-primary";
-
-                            <div class="col-2 mb-2">
-                                <label class="btn @btnClass w-100 text-center">
-                                    @Html.RadioButtonFor(m => m.AppointmentTime, slot.Value, new { })
-                                    <div>@slot.Text</div>
-                                </label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Patient Phone Search -->
-                <div class="form-group mb-3">
-                    @Html.LabelFor(m => m.PatientPhone, "Search by Patient Phone number", htmlAttributes: new { @class = "form-label fw-semibold" })
-                    <div class="input-group">
-                        @Html.TextBoxFor(m => m.PatientPhone, new { @class = "form-control me-2", id = "PatientPhone", placeholder = "Enter phone number" })
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-info " id="btnSearchPhone">Search</button>
-                        </div>
-                    </div>
-                    <small class="form-text text-muted">*** Enter phone number to find existing patient info.</small>
-                </div>
-
-                <!-- Patient Details -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.PatientName, htmlAttributes: new { @class = "form-label fw-semibold" })
-                        @Html.TextBoxFor(m => m.PatientName, new { @class = "form-control", placeholder = "Patient Name" })
-                    </div>
-
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.PatientEmail, htmlAttributes: new { @class = "form-label fw-semibold" })
-                        @Html.TextBoxFor(m => m.PatientEmail, new { @class = "form-control", placeholder = "Patient Email" })
-                    </div>
-                </div>
+                @Html.HiddenFor(m => m.AppointmentTime)
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.Label("Date of Birth", htmlAttributes: new { @class = "form-label fw-semibold" })
-                        <input type="date" name="PatientDOB" class="form-control" id="PatientDOB" />
-                    </div>
-
-                    <div class="col-md-6">
-                        @Html.Label("Gender", htmlAttributes: new { @class = "form-label fw-semibold" })
-                        <select name="PatientGender" class="form-select" id="PatientGender">
-                            <option value="">-- Select Gender --</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.PatientPhone, htmlAttributes: new { @class = "form-label fw-semibold" })
-                        @Html.TextBoxFor(m => m.PatientPhone, new { @class = "form-control", placeholder = "Patient Phone Number" })
-                    </div>
-
-                    <div class="col-md-6">
-                        @Html.Label("Address", htmlAttributes: new { @class = "form-label fw-semibold" })
-                        <textarea name="PatientAddress" class="form-control" id="PatientAddress" placeholder="Patient Address"></textarea>
+                        @Html.Label("Patient", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownList("PatientId", null, "-- Select PatientId --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.PatientId, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -107,30 +43,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $("#btnSearchPhone").click(function(){
-            var phone = $("#PatientPhone").val().trim();
-            if(phone === "") {
-                alert("Enter phone number");
-                return;
-            }
-
-            $.getJSON('@Url.Action("GetPatientByPhone")', { phone: phone }, function(data){
-                if(data.found){
-                    var p = data.patient;
-                    $("#PatientName").val(p.PatientName);
-                    $("#PatientEmail").val(p.PatientEmail);
-                    $("#PatientDOB").val(p.PatientDOB ? p.PatientDOB.substring(0,10) : '');
-                    $("#PatientGender").val(p.PatientGender);
-                    $("#PatientAddress").val(p.PatientAddress);
-                    $("#PatientPhone").val(p.PatientPhone);
-                } else {
-                    alert("No patient found. Please enter details.");
-                    $("#PatientName, #PatientEmail, #PatientDOB, #PatientGender, #PatientAddress").val('');
-                }
-            });
-        });
-    });
+    
 </script>
 
 <style>
