@@ -19,6 +19,9 @@ namespace DoctorAppointment.Models
 
         public DbSet<Appointment> Appointments { get; set; }
 
+        public DbSet<Bill> Bill { get; set; }
+
+
 
 
 

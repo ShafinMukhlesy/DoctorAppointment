@@ -1,0 +1,51 @@
+﻿@model IEnumerable<DoctorAppointment.Models.Appointment>
+
+@{
+    ViewBag.Title = "Appointments";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white text-center">
+        <h3 class="mb-0">Appointments</h3>
+    </div>
+    <div class="card-body">
+        <p>
+            @Html.ActionLink("Book New Appointment", "SelectDoctor", null, new { @class = "btn btn-success mb-3" })
+        </p>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Department</th>
+                    <th>Organization</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.AppointmentId</td>
+                        <td>@item.Patient.FirstName @item.Patient.LastName</td>
+                        <td>@item.Doctor.Name</td>
+                        <td>@item.Department.Name</td>
+                        <td>@item.Organization.Name</td>
+                        <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
+                        <td>
+                            @*@Html.ActionLink("Details", "Details", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-info" })
+                            @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-warning mx-1" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-danger" })*@
+                            @Html.ActionLink("Create Bill", "Create", "Bill", new { appointmentId = item.AppointmentId, patientId=item.PatientId, doctorid=item.DoctorId }, new { @class = "btn btn-sm btn-success ml-1" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

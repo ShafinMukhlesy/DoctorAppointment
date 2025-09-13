@@ -1,0 +1,74 @@
+﻿@model DoctorAppointment.Models.Bill
+
+@{
+    ViewBag.Title = "Create Bill";
+}
+
+<div class="card shadow-lg mt-4">
+    <div class="card-header bg-primary text-white text-center">
+        <h3 class="mb-0">Create Bill</h3>
+    </div>
+
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.AppointmentId, "Appointment", htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.DropDownList("AppointmentId", null, "-- Select Appointment --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AppointmentId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.PatientId, "Patient", htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.DropDownList("PatientId", null, "-- Select Patient --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PatientId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.DoctorId, "Doctor", htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.DropDownList("DoctorId", null, "-- Select Doctor --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DoctorId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.BillDate, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.TextBoxFor(model => model.BillDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.BillDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.ConsultationFee, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.TextBoxFor(model => model.ConsultationFee, new { @class = "form-control", type = "number", step = "0.01" })
+                @Html.ValidationMessageFor(model => model.ConsultationFee, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.OtherCharges, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.TextBoxFor(model => model.OtherCharges, new { @class = "form-control", type = "number", step = "0.01" })
+                @Html.ValidationMessageFor(model => model.OtherCharges, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.TextBoxFor(model => model.Discount, new { @class = "form-control", type = "number", step = "0.01" })
+                @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.PaymentStatus, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.DropDownListFor(model => model.PaymentStatus,
+                    new SelectList(new[] { "Unpaid", "Paid", "Pending" }), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PaymentStatus, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+                <button type="submit" class="btn btn-success">Save Bill</button>
+            </div>
+        }
+    </div>
+</div>

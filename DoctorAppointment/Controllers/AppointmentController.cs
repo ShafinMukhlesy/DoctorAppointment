@@ -11,6 +11,18 @@ namespace DoctorAppointment.Controllers
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
+        public ActionResult Index()
+        {
+            var appointments = db.Appointments
+                                 .Include("Doctor")
+                                 .Include("Department")
+                                 .Include("Organization")
+                                 .Include("Patient")
+                                 .ToList();
+            return View(appointments);
+        }
+
+
         // GET: Appointment
         public ActionResult SelectDoctor()
         {

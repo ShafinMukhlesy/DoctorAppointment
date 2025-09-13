@@ -1,0 +1,60 @@
+﻿@model IEnumerable<DoctorAppointment.Models.Bill>
+
+@{
+    ViewBag.Title = "Billing List";
+}
+
+<h2>Billing List</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-primary">
+        <tr>
+            <th>Bill ID</th>
+            <th>Appointment ID</th>
+            <th>Patient Name</th>
+            <th>Doctor Name</th>
+            <th>Consultation Fee</th>
+            <th>Other Charges</th>
+            <th>Discount</th>
+            <th>Total Amount</th>
+            <th>Bill Date</th>
+            <th>Payment Status</th>
+            <th>Payment Method</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in Model)
+        {
+            // Safe conversion to decimal
+            decimal consultationFee = 0, otherCharges = 0, discount = 0, total = 0;
+            decimal.TryParse(bill.ConsultationFee, out consultationFee);
+            decimal.TryParse(bill.OtherCharges, out otherCharges);
+            decimal.TryParse(bill.Discount, out discount);
+            total = consultationFee + otherCharges - discount;
+
+            <tr>
+                <td>@bill.BillId</td>
+                <td>@bill.AppointmentId</td>
+                <td>@bill.Patient.FirstName @bill.Patient.LastName</td>
+                <td>@bill.Doctor.Name</td>
+                <td>@consultationFee.ToString("0.00")</td>
+                <td>@otherCharges.ToString("0.00")</td>
+                <td>@discount.ToString("0.00")</td>
+                <td>@total.ToString("0.00")</td>
+                <td>@bill.BillDate.ToString("yyyy-MM-dd")</td>
+                <td>@bill.PaymentStatus</td>
+                <td>@bill.PaymentMethod</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = bill.BillId }) |
+                    @Html.ActionLink("Details", "Details", new { id = bill.BillId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = bill.BillId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    @Html.ActionLink("Create New Bill", "Create", null, new { @class = "btn btn-success" })
+</p>
