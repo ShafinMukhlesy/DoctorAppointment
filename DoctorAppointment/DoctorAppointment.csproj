@@ -145,6 +145,7 @@
     </Compile>
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\AppointmentSearchViewModel.cs" />
     <Compile Include="Models\Bill.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Doctor.cs" />

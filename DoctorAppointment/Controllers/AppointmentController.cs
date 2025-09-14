@@ -11,21 +11,48 @@ namespace DoctorAppointment.Controllers
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
+        public ActionResult Index(string patientName, int? doctorId, DateTime? fromDate, DateTime? toDate)
         {
-            var appointments = db.Appointments
-                                 .Include("Doctor")
-                                 .Include("Department")
-                                 .Include("Organization")
-                                 .Include("Patient")
-                                 .ToList();
+            var query = db.Appointments
+                          .Include("Doctor")
+                          .Include("Department")
+                          .Include("Organization")
+                          .Include("Patient")
+                          .AsQueryable();
 
+            if (!string.IsNullOrEmpty(patientName))
+            {
+                query = query.Where(a => (a.Patient.FirstName + " " + a.Patient.LastName).Contains(patientName));
+            }
+
+            if (doctorId.HasValue)
+            {
+                query = query.Where(a => a.DoctorId == doctorId.Value);
+            }
+
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                query = query.Where(a => a.AppointmentDate >= fromDate.Value && a.AppointmentDate <= toDate.Value);
+            }
+
+            var appointments = query.ToList();
 
             var billedAppointments = db.Bill.Select(b => b.AppointmentId).ToList();
             ViewBag.BilledAppointments = billedAppointments;
 
-            return View(appointments);
+            var model = new AppointmentSearchViewModel
+            {
+                PatientName = patientName,
+                DoctorId = doctorId,
+                FromDate = fromDate,
+                ToDate = toDate,
+                Appointments = appointments,
+                Doctors = db.Doctor.ToList()
+            };
+
+            return View(model);
         }
+
 
 
         // GET: Appointment

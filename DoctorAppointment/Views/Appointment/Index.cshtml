@@ -1,22 +1,52 @@
-﻿@model IEnumerable<DoctorAppointment.Models.Appointment>
+﻿@model DoctorAppointment.Models.AppointmentSearchViewModel
 
 @{
     ViewBag.Title = "Appointments";
     var billedAppointments = ViewBag.BilledAppointments as List<int>;
-
 }
-
-
 
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white text-center">
         <h3 class="mb-0">Appointments</h3>
     </div>
     <div class="card-body">
+
+        <!-- Search Form -->
+        <div class="card mb-3">
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "Appointment", FormMethod.Get))
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            @Html.TextBox("patientName", Model.PatientName, new { @class = "form-control", placeholder = "Patient Name" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("doctorId",
+                                new SelectList(Model.Doctors, "DoctorId", "Name", Model.DoctorId),
+                                "All Doctors",
+                                new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBox("fromDate", Model.FromDate?.ToString("yyyy-MM-dd"),
+                                new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBox("toDate", Model.ToDate?.ToString("yyyy-MM-dd"),
+                                new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
         <p>
             @Html.ActionLink("Book New Appointment", "SelectDoctor", null, new { @class = "btn btn-success mb-3" })
         </p>
 
+        <!-- Appointments Table -->
         <table class="table table-bordered table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
@@ -31,26 +61,37 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model.Appointments != null && Model.Appointments.Any())
+                {
+                    foreach (var item in Model.Appointments)
+                    {
+                        <tr>
+                            <td>@item.AppointmentId</td>
+                            <td>@item.Patient.FirstName @item.Patient.LastName</td>
+                            <td>@item.Doctor.Name</td>
+                            <td>@item.Department.Name</td>
+                            <td>@item.Organization.Name</td>
+                            <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                            <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
+                            <td>
+                                @if (billedAppointments.Contains(item.AppointmentId))
+                                {
+                                    <button class="btn btn-secondary" disabled>Bill Created</button>
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Create Bill", "Create", "Bill",
+                                        new { appointmentId = item.AppointmentId, patientId = item.PatientId, doctorid = item.DoctorId },
+                                        new { @class = "btn btn-sm btn-success" })
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@item.AppointmentId</td>
-                        <td>@item.Patient.FirstName @item.Patient.LastName</td>
-                        <td>@item.Doctor.Name</td>
-                        <td>@item.Department.Name</td>
-                        <td>@item.Organization.Name</td>
-                        <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                        <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
-                        <td>
-                            @if (billedAppointments.Contains(item.AppointmentId))
-                            {
-                                <button class="btn btn-secondary" disabled>Bill Created</button>
-                            }
-                            else
-                            {
-                                @Html.ActionLink("Create Bill", "Create", "Bill", new { appointmentId = item.AppointmentId, patientId = item.PatientId, doctorid = item.DoctorId }, new { @class = "btn btn-sm btn-success" })
-                            }
-                        </td>
+                        <td colspan="8" class="text-center text-muted">No appointments found.</td>
                     </tr>
                 }
             </tbody>
