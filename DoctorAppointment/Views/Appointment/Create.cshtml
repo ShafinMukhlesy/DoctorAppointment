@@ -8,8 +8,9 @@
 
 <div class="container mt-5">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0 text-center" >Fill Patient Information</h3>
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Fill Patient Information</h3>
+            @Html.ActionLink("➕ Add New Patient", "CreateEdit", "Patient", null, new { @class = "btn btn-light btn-sm" })
         </div>
         <div class="card-body">
             @using (Html.BeginForm("Create", "Appointment", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
@@ -32,7 +33,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex justify-content-end mt-2">
                     <button type="submit" class="btn btn-success me-2">Book Appointment</button>
                     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
                 </div>

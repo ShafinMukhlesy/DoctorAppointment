@@ -60,7 +60,16 @@ namespace DoctorAppointment.Controllers
                 AppointmentTime = TimeSpan.Parse(AppointmentTime)  // convert string to TimeSpan
             };
 
-            ViewBag.PatientId = new SelectList(db.Patients, "PatientId", "FirstName");
+            ViewBag.PatientId = new SelectList(
+                                                db.Patients.Select(p => new
+                                                {
+                                                    PatientId = p.PatientId,
+                                                    FullName = p.FirstName + " " + p.LastName
+                                                }),
+                                                "PatientId",
+                                                "FullName"
+                                            );
+
 
             return View(model);
         }
