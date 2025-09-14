@@ -2,7 +2,11 @@
 
 @{
     ViewBag.Title = "Appointments";
+    var billedAppointments = ViewBag.BilledAppointments as List<int>;
+
 }
+
+
 
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white text-center">
@@ -38,10 +42,14 @@
                         <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
                         <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
                         <td>
-                            @*@Html.ActionLink("Details", "Details", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-info" })
-                            @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-warning mx-1" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId }, new { @class = "btn btn-sm btn-danger" })*@
-                            @Html.ActionLink("Create Bill", "Create", "Bill", new { appointmentId = item.AppointmentId, patientId=item.PatientId, doctorid=item.DoctorId }, new { @class = "btn btn-sm btn-success ml-1" })
+                            @if (billedAppointments.Contains(item.AppointmentId))
+                            {
+                                <button class="btn btn-secondary" disabled>Bill Created</button>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Create Bill", "Create", "Bill", new { appointmentId = item.AppointmentId, patientId = item.PatientId, doctorid = item.DoctorId }, new { @class = "btn btn-sm btn-success" })
+                            }
                         </td>
                     </tr>
                 }

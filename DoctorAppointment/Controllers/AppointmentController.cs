@@ -19,6 +19,11 @@ namespace DoctorAppointment.Controllers
                                  .Include("Organization")
                                  .Include("Patient")
                                  .ToList();
+
+
+            var billedAppointments = db.Bill.Select(b => b.AppointmentId).ToList();
+            ViewBag.BilledAppointments = billedAppointments;
+
             return View(appointments);
         }
 
@@ -67,7 +72,7 @@ namespace DoctorAppointment.Controllers
             {
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
-                return RedirectToAction("Confirm", new { id = appointment.AppointmentId });
+                return RedirectToAction("Index");
             }
             return View(appointment);
         }
