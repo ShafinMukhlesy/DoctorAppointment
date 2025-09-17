@@ -38,5 +38,7 @@ namespace DoctorAppointment.Models
 
         [ForeignKey("OrganizationId")]
         public virtual Organization Organization { get; set; }
+
+        public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; }
     }
 }

@@ -179,6 +179,26 @@ namespace DoctorAppointment.Controllers
             return Json(doctor, JsonRequestBehavior.AllowGet);
         }
 
+
+        public JsonResult GetDoctorScheduleDetails(int doctorId)
+        {
+            var doctor = db.DoctorSchedules
+                .Where(d => d.DoctorId == doctorId)
+                .ToList() // bring data into memory
+                .Select(d => new
+                {
+                    d.DoctorId,
+                    d.MaxPatients,
+                    DayOfWeek = d.DayOfWeek.ToString(),
+                    StartTime = d.StartTime.ToString(@"hh\:mm"),
+                    EndTime = d.EndTime.ToString(@"hh\:mm"),
+                    d.SlotDuration
+                })
+                .ToList();
+
+            return Json(doctor, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetAvailableSlotsforPatient(int doctorId, DateTime appointmentDate)
         {
             var allSlots = GetAvailableSlots(doctorId, appointmentDate)
