@@ -13,14 +13,14 @@
                 <input type="hidden" id="SelectedTime" name="AppointmentTime" />
 
                 <div class="row">
-                    <!-- Doctor Info Card on Left -->
-                    <div class="col-md-4 mb-3">
-                        <div id="doctorDetails" class="card shadow-sm border-0">
+                    <!-- Left Column: Doctor Info + Schedule -->
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div id="doctorDetails" class="card shadow-sm border-0 mb-3">
                             <div class="card-body text-center">
                                 <img id="docImage" src="~/Uploads/Doctors/doctor.png" alt="Doctor Image"
                                      class="img-fluid rounded-circle mb-3 shadow"
-                                     style="width:200px; height:200px; object-fit:cover;" />
-                                <h4 id="docName" class="mb-1 text-primary"></h4>
+                                     style="width:150px; height:150px; object-fit:cover;" />
+                                <h5 id="docName" class="mb-1 text-primary"></h5>
                                 <p id="docSpec" class="text-muted small"></p>
                                 <hr />
                                 <p><strong>Fee:</strong> <span id="docFee"></span></p>
@@ -28,75 +28,77 @@
                                 <p><strong>Phone:</strong> <span id="docPhone"></span></p>
                             </div>
                         </div>
-                    </div>
-                    <!-- Doctor Schedule -->
-                    <div id="docSchedule" class="text-start mt-2">
-                        <h6 class="text-primary">Doctor Schedule</h6>
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Day</th>
-                                    <th>Time</th>
-                                    <th>Max Patients</th>
-                                    <th>Slot Duration (min)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="scheduleTableBody"></tbody>
-                        </table>
+
+                        <!-- Doctor Schedule -->
+                        <div id="docSchedule" class="card shadow-sm border-0">
+                            <div class="card-body p-2">
+                                <h6 class="text-primary mb-3">Doctor Schedule</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Day</th>
+                                                <th>Time</th>
+                                                <th>Max Patients</th>
+                                                <th>Slot Duration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="scheduleTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Form on Right -->
-                    <div class="col-md-8">
+                    <!-- Right Column: Appointment Form -->
+                    <div class="col-lg-8 col-md-12">
                         <div class="card shadow-sm border-0">
                             <div class="card-body">
                                 <h5 class="mb-3 text-secondary">Select Organization & Doctor</h5>
 
-                                <div class="form-group mb-3">
+                                <div class="mb-3">
                                     @Html.Label("Organization", new { @class = "form-label fw-bold" })
                                     @Html.DropDownList("OrganizationId", (SelectList)ViewBag.Organizations, "-- Select Organization --", new { @class = "form-control" })
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="mb-3">
                                     @Html.Label("Department", new { @class = "form-label fw-bold" })
                                     <select id="DepartmentId" name="DepartmentId" class="form-control">
                                         <option>-- Select Department --</option>
                                     </select>
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="mb-3">
                                     @Html.Label("Doctor", new { @class = "form-label fw-bold" })
                                     <select id="DoctorId" name="DoctorId" class="form-control">
                                         <option>-- Select Doctor --</option>
                                     </select>
                                 </div>
 
-                                <div class="form-group mb-4">
+                                <div class="mb-4">
                                     @Html.Label("Appointment Date", new { @class = "form-label fw-bold" })
                                     <input type="date" id="AppointmentDate" name="AppointmentDate" class="form-control" />
                                 </div>
 
                                 <div id="timeSlotsContainer" class="mt-4">
                                     <h5 class="mb-3">Select Time Slot</h5>
-                                    <div class="row" id="timeSlotsRow">
-                                        <!-- Time slots will be loaded here dynamically -->
-                                    </div>
+                                    <div class="row" id="timeSlotsRow"></div>
                                 </div>
 
-                                <div class="text-end">
+                                <div class="text-end mt-3">
                                     <button type="submit" class="btn btn-primary px-4">
                                         Next <i class="bi bi-arrow-right-circle"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> <!-- End Right Column -->
                 </div>
             }
         </div>
     </div>
 </div>
 
-<!-- Inline styles so no section Styles is needed -->
 <style>
     #timeSlotsRow label.btn {
         transition: all 0.2s ease-in-out;
@@ -105,9 +107,9 @@
         font-size: 0.9rem;
     }
 
-        #timeSlotsRow label.btn:hover {
-            transform: scale(1.05);
-        }
+    #timeSlotsRow label.btn:hover {
+        transform: scale(1.05);
+    }
 
     #timeSlotsRow input[type=radio]:checked + div {
         font-weight: bold;
@@ -120,6 +122,8 @@
     #timeSlotsContainer {
         display: none;
     }
+
+    
 </style>
 
 @section Scripts {
