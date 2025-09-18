@@ -24,17 +24,39 @@
                 @Html.HiddenFor(m => m.AppointmentDate)
                 @Html.HiddenFor(m => m.AppointmentTime)
 
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.Label("Search by Phone Number", htmlAttributes: new { @class = "form-label" })
+                        <div class="input-group">
+                            <input type="text" id="phoneSearch" class="form-control" placeholder="Enter phone number" />
+                            <button type="button" id="btnSearch" class="btn btn-outline-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         @Html.Label("Patient", htmlAttributes: new { @class = "form-label" })
-                        @Html.DropDownList("PatientId", null, "-- Select PatientId --", new { @class = "form-select" })
+
+                        @Html.DropDownList("PatientId", null, "-- Select Patient --", new { @class = "form-select" })
                         @Html.ValidationMessageFor(model => model.PatientId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.Label("Gender", htmlAttributes: new { @class = "form-label" })
+                        <div class="input-group">
+                            <input type="text" id="Gender" class="form-control" disabled />
+                        </div>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="d-flex justify-content-end mt-2">
-                    <button type="submit" class="btn btn-success me-2">Book Appointment</button>
+                    <button id="bookingAppointment" type="submit" class="btn btn-success me-2">Book Appointment</button>
                     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
                 </div>
             }
@@ -44,7 +66,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    
+
 </script>
 
 <style>
@@ -71,3 +93,77 @@
         min-width: 100px;
     }
 </style>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Bind search event
+            SearchPaitent();
+
+            // Call search immediately if you want it on page load
+            // $("#btnSearch").trigger("click");
+
+            function SearchPaitent() {
+
+                $("#Gender").val("");
+                $("#bookingAppointment").prop("disabled", true);
+
+                $("#btnSearch").click(function () {
+
+                    $("#Gender").val("");
+                    $("#bookingAppointment").prop("disabled", true);
+                    var phone = $("#phoneSearch").val();
+                    //if (phone.trim() === "") {
+                    //    alert("Please enter a phone number.");
+                    //    return;
+                    //}
+
+                    $.ajax({
+                        url: '@Url.Action("GetPatientsByPhone", "Appointment")',
+                        type: "GET",
+                        data: { phone: phone },
+                        success: function (data) {
+                            var ddl = $("#PatientId");
+                            ddl.empty();
+                            ddl.append($("<option>").val("").text("-- Select Patient --"));
+
+                            if (data && data.length > 0) {
+                                $.each(data, function (i, patient) {
+                                    ddl.append($("<option>").val(patient.PatientId).text(patient.FullName));
+                                });
+                            } else {
+                                ddl.append($("<option>").val("").text("No patient found"));
+                            }
+                        },
+                        error: function () {
+                            alert("Error while fetching patients.");
+                        }
+                    });
+                });
+            }
+
+            // Change event for patient dropdown
+            $("#PatientId").on("change", function () {
+                var patientId = $(this).val();
+
+                if (patientId && patientId !== "") {
+                    $.getJSON('@Url.Action("GetPatientGender", "Appointment")',
+                              { patientId: patientId },
+                              function (data) {
+                        if (data) {
+                            $("#Gender").val(data);
+                            $("#bookingAppointment").prop("disabled", false);
+                        } else {
+                            $("#Gender").val("");
+                        }
+                    });
+                } else {
+                    $("#Gender").val("");
+                }
+            });
+
+        });
+    </script>
+}

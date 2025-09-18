@@ -215,6 +215,30 @@ namespace DoctorAppointment.Controllers
             return Json(new { AvailableSlots = allSlots, BookedSlots = bookedSlots }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetPatientsByPhone(string phone)
+        {
+            var patients = db.Patients
+                             .Where(p => p.PhoneNumber.Contains(phone))
+                             .Select(p => new
+                             {
+                                 PatientId = p.PatientId,
+                                 FullName = p.FirstName + " " + p.LastName 
+                             })
+                             .ToList();
+
+            return Json(patients, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetPatientGender(int patientId)
+        {
+            var gender = db.Patients
+                .Where(p => p.PatientId == patientId)
+                .Select(p => p.Gender)
+                .FirstOrDefault();
+
+            return Json(gender, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }
