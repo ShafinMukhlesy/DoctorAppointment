@@ -53,6 +53,21 @@ namespace DoctorAppointment.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult SelectDoctorFromList(int OrganizationId, int DepartmentId, int DoctorId)
+        {
+
+            ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name", OrganizationId);
+            ViewBag.DepartmentId = new SelectList(db.Department, "DepartmentId", "Name", DepartmentId);
+            ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name", DoctorId);
+
+            ViewBag.SelectedOrganizationId = OrganizationId;
+            ViewBag.SelectedDepartmentId = DepartmentId;
+            ViewBag.SelectedDoctorId = DoctorId;
+
+            // Redirect to the existing "Book Appointment - Step 1" view
+            return View("SelectDoctor");
+        }
 
 
         // GET: Appointment

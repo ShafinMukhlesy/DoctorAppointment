@@ -129,132 +129,193 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-       $(document).ready(function () {
+        $(document).ready(function () {
 
-    var nextBtn = $("button[type='submit']");
-    nextBtn.prop("disabled", true);
 
-    // Function to check if all required fields are selected
-    function validateForm() {
-        var org = $("#OrganizationId").val();
-        var dept = $("#DepartmentId").val();
-        var doctor = $("#DoctorId").val();
-        var date = $("#AppointmentDate").val();
-        var time = $("input[name='AppointmentTime']:checked").val(); // check selected time slot
+        var selectedOrg = '@ViewBag.SelectedOrganizationId';
+        var selectedDept = '@ViewBag.SelectedDepartmentId';
+        var selectedDoctor = '@ViewBag.SelectedDoctorId';
 
-        var allSelected = org && org !== "" &&
-                          dept && dept !== "-- Select Department --" &&
-                          doctor && doctor !== "-- Select Doctor --" &&
-                          date && time;
+        if (selectedOrg) {
+            $('#OrganizationId').val(selectedOrg);
+            loadTimeSlots();
+            // Load departments first
+            $.getJSON('@Url.Action("GetDepartments")', { organizationId: selectedOrg }, function (data) {
+                var options = '<option>-- Select Department --</option>';
+                $.each(data, function (i, dept) {
+                    options += '<option value="' + dept.DepartmentId + '">' + dept.Name + '</option>';
+                });
+                $('#DepartmentId').html(options);
 
-        if (allSelected) {
-            $("#validationMessage").remove();
-            nextBtn.prop("disabled", false);
-        } else {
-            if ($("#validationMessage").length === 0) {
-                nextBtn.after('<p id="validationMessage" class="text-danger mt-2">Please select Organization, Department, Doctor, Appointment Date, and Time Slot.</p>');
-            }
-            nextBtn.prop("disabled", true);
-        }
-    }
+                if (selectedDept) {
+                    $('#DepartmentId').val(selectedDept);
+                    loadTimeSlots();
+                    // Load doctors next
+                    $.getJSON('@Url.Action("GetDoctors")', { departmentId: selectedDept }, function (docs) {
+                        var docOptions = '<option>-- Select Doctor --</option>';
+                        $.each(docs, function (i, doc) {
+                            docOptions += '<option value="' + doc.DoctorId + '">' + doc.Name + '</option>';
+                        });
+                        $('#DoctorId').html(docOptions);
 
-    // Validate when any field changes or a time slot is selected
-           $("#OrganizationId, #DepartmentId, #DoctorId, #AppointmentDate").change(validateForm);
-
-           $(document).on("change", "input[name='AppointmentTime']", function () {
-               $("#SelectedTime").val($(this).val());  // ✅ Sync hidden field
-               console.log("Selected Time: " + $(this).val());
-               validateForm();
-           });
-
-    // Existing code to load Departments, Doctors, Doctor Details, and Time Slots
-    $("#OrganizationId").change(function () {
-        var orgId = $(this).val();
-        $("#DepartmentId").html('<option>Loading...</option>');
-        $.getJSON('@Url.Action("GetDepartments")', { organizationId: orgId }, function (data) {
-            var options = '<option>-- Select Department --</option>';
-            $.each(data, function (i, dept) {
-                options += '<option value="' + dept.DepartmentId + '">' + dept.Name + '</option>';
-            });
-            $("#DepartmentId").html(options);
-            $("#DoctorId").html('<option>-- Select Doctor --</option>');
-            validateForm();
-        });
-    });
-
-    $("#DepartmentId").change(function () {
-        var deptId = $(this).val();
-        $("#DoctorId").html('<option>Loading...</option>');
-        $.getJSON('@Url.Action("GetDoctors")', { departmentId: deptId }, function (data) {
-            var options = '<option>-- Select Doctor --</option>';
-            $.each(data, function (i, doc) {
-                options += '<option value="' + doc.DoctorId + '">' + doc.Name + '</option>';
-            });
-            $("#DoctorId").html(options);
-            validateForm();
-        });
-    });
-
-    $("#DoctorId").change(function () {
-        var docId = $(this).val();
-        if (docId && docId !== "-- Select Doctor --") {
-            $.getJSON('@Url.Action("GetDoctorDetails")', { doctorId: docId }, function (data) {
-                if (data) {
-                    $("#docImage").attr("src", data.Picture || "~/Uploads/Doctors/doctor.png");
-                    $("#docName").text(data.Name);
-                    $("#docSpec").text(data.Specialization);
-                    $("#docFee").text(data.Fee);
-                    $("#docEmail").text(data.Email);
-                    $("#docPhone").text(data.Phone);
-                    $("#doctorDetails").show();
+                        if (selectedDoctor) {
+                            $('#DoctorId').val(selectedDoctor);
+                            getDoctordetails(selectedDoctor);
+                            loadDoctorSchedule(selectedDoctor)//  existing function
+                            loadTimeSlots(); // optional auto load
+                        }
+                    });
                 }
             });
-        } else {
-            $("#doctorDetails").hide();
         }
-        validateForm();
-    });
 
 
 
-$("#DoctorId").change(function () {
-    var docId = $(this).val();
 
-    var tableHtml = "";
+        var nextBtn = $("button[type='submit']");
+        nextBtn.prop("disabled", true);
 
-    if (docId && docId !== "-- Select Doctor --") {
-        $.getJSON('@Url.Action("GetDoctorScheduleDetails")', { doctorId: docId }, function (data) {
-            if (data && data.length > 0) {
-                // Build table rows as string
-                $.each(data, function (i, sch) {
-                    tableHtml +=
-                        "<tr>" +
-                            "<td>" + sch.DayOfWeek + "</td>" +
-                            "<td>" + sch.StartTime + " - " + sch.EndTime + "</td>" +
-                            "<td>" + sch.MaxPatients + "</td>" +
-                            "<td>" + sch.SlotDuration + "</td>" +
-                        "</tr>";
+    // Function to check if all required fields are selected
+        function validateForm() {
+            var org = $("#OrganizationId").val();
+            var dept = $("#DepartmentId").val();
+            var doctor = $("#DoctorId").val();
+            var date = $("#AppointmentDate").val();
+            var time = $("input[name='AppointmentTime']:checked").val(); // check selected time slot
+
+            var allSelected = org && org !== "" &&
+                              dept && dept !== "-- Select Department --" &&
+                              doctor && doctor !== "-- Select Doctor --" &&
+                              date && time;
+
+            if (allSelected) {
+                $("#validationMessage").remove();
+                nextBtn.prop("disabled", false);
+            } else {
+                if ($("#validationMessage").length === 0) {
+                    nextBtn.after('<p id="validationMessage" class="text-danger mt-2">Please select Organization, Department, Doctor, Appointment Date, and Time Slot.</p>');
+                }
+                nextBtn.prop("disabled", true);
+            }
+        }
+
+    // Validate when any field changes or a time slot is selected
+        $("#OrganizationId, #DepartmentId, #DoctorId, #AppointmentDate").change(validateForm);
+
+        $(document).on("change", "input[name='AppointmentTime']", function () {
+            $("#SelectedTime").val($(this).val());  // ✅ Sync hidden field
+            console.log("Selected Time: " + $(this).val());
+            validateForm();
+        });
+
+    // Existing code to load Departments, Doctors, Doctor Details, and Time Slots
+        $("#OrganizationId").change(function () {
+            var orgId = $(this).val();
+            $("#DepartmentId").html('<option>Loading...</option>');
+            $.getJSON('@Url.Action("GetDepartments")', { organizationId: orgId }, function (data) {
+                var options = '<option>-- Select Department --</option>';
+                $.each(data, function (i, dept) {
+                    options += '<option value="' + dept.DepartmentId + '">' + dept.Name + '</option>';
+                });
+                $("#DepartmentId").html(options);
+                $("#DoctorId").html('<option>-- Select Doctor --</option>');
+                validateForm();
+                loadTimeSlots();
+            });
+        });
+
+        $("#DepartmentId").change(function () {
+                $("#scheduleTableBody").html("<tr><td colspan='4' class='text-muted text-center'>No schedule available</td></tr>");
+            var deptId = $(this).val();
+            $("#DoctorId").html('<option>Loading...</option>');
+            $.getJSON('@Url.Action("GetDoctors")', { departmentId: deptId }, function (data) {
+                var options = '<option>-- Select Doctor --</option>';
+                $.each(data, function (i, doc) {
+                    options += '<option value="' + doc.DoctorId + '">' + doc.Name + '</option>';
+                });
+                $("#DoctorId").html(options);
+                validateForm();
+                loadTimeSlots();
+
+            });
+        });
+
+        $("#DoctorId").change(function () {
+
+            var docId = $(this).val();
+            loadTimeSlots();
+            getDoctordetails(docId)
+        });
+
+
+        function getDoctordetails(docId) {
+            var docId = docId;
+
+            if (docId && docId !== "-- Select Doctor --") {
+                $.getJSON('@Url.Action("GetDoctorDetails")', { doctorId: docId }, function (data) {
+                        if (data) {
+                        $("#docImage").attr("src", data.Picture || "~/Uploads/Doctors/doctor.png");
+                        $("#docName").text(data.Name);
+                        $("#docSpec").text(data.Specialization);
+                        $("#docFee").text(data.Fee);
+                        $("#docEmail").text(data.Email);
+                        $("#docPhone").text(data.Phone);
+                        $("#doctorDetails").show();
+                     }
+                });
+
+            } else {
+                $("#doctorDetails").hide();
+                }
+            validateForm();
+        }
+
+
+        $("#DoctorId").change(function () {
+            var val = $(this).val();
+            loadDoctorSchedule(val);
+            loadTimeSlots();
+
+         });
+
+            function loadDoctorSchedule(val) {
+
+                var docId = val;
+
+            var tableHtml = "";
+
+            if (docId && docId !== "-- Select Doctor --") {
+                $.getJSON('@Url.Action("GetDoctorScheduleDetails")', { doctorId: docId }, function (data) {
+                    if (data && data.length > 0) {
+                        // Build table rows as string
+                        $.each(data, function (i, sch) {
+                            tableHtml +=
+                                "<tr>" +
+                                    "<td>" + sch.DayOfWeek + "</td>" +
+                                    "<td>" + sch.StartTime + " - " + sch.EndTime + "</td>" +
+                                    "<td>" + sch.MaxPatients + "</td>" +
+                                    "<td>" + sch.SlotDuration + "</td>" +
+                                "</tr>";
+                        });
+                    } else {
+                        tableHtml = "<tr><td colspan='4' class='text-muted text-center'>No schedule available</td></tr>";
+                    }
+
+                    // Set table body HTML
+                    $("#scheduleTableBody").html(tableHtml);
+
+                    // Show doctor details section
+                    $("#doctorDetails").show();
                 });
             } else {
-                tableHtml = "<tr><td colspan='4' class='text-muted text-center'>No schedule available</td></tr>";
+                // Hide doctor details if no doctor selected
+                $("#doctorDetails").hide();
+                $("#scheduleTableBody").html(""); // clear table
             }
 
-            // Set table body HTML
-            $("#scheduleTableBody").html(tableHtml);
-
-            // Show doctor details section
-            $("#doctorDetails").show();
-        });
-    } else {
-        // Hide doctor details if no doctor selected
-        $("#doctorDetails").hide();
-        $("#scheduleTableBody").html(""); // clear table
-    }
-
-    // Re-validate form (enable/disable Next button)
-    validateForm();
-});
-
+          // Re-validate form (enable/disable Next button)
+          validateForm();
+        }
 
 
 

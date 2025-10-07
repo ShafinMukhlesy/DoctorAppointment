@@ -1,88 +1,72 @@
 ﻿@model IEnumerable<DoctorAppointment.Models.Doctor>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Doctor's List";
 }
 
+<h2 class="text-center mb-4">Doctor's List</h2>
 
-
-
-<h2>Doctor's List</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table id="doctorTable" class="table table-striped table-bordered">
-    <thead class="table-primary">
-        <tr>
-            <th></th>
-            <th>Department</th>
-            <th>Organization</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Specialization</th>
-            <th>Fee</th>
-            <th>Action</th>
-        </tr>
-    </thead>
+<div class="d-flex flex-wrap justify-content-center gap-4">
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @if (!string.IsNullOrEmpty(item.Picture))
-                {
-                    <img src="@Url.Content(item.Picture)" width="80" class="img-thumbnail" />
-                }
-            </td>
+        <div class="card shadow-lg" style="width: 18rem; border-radius: 15px;">
+            @if (!string.IsNullOrEmpty(item.Picture))
+            {
+                <img src="@Url.Content(item.Picture)"
+                     class="card-img-top"
+                     style="height: 220px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;" />
+            }
+            else
+            {
+                <img src="~/images/no-image.png"
+                     class="card-img-top"
+                     style="height: 220px; object-fit: cover;" />
+            }
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Organization.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Specialization)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fee)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.DoctorId }) |
-                @*@Html.ActionLink("Details", "Details", new { id = item.DoctorId }) |*@
-                @Html.ActionLink("Delete", "Delete", new { id = item.DoctorId })
-            </td>
-        </tr>
+            <div class="card-body text-center">
+                <h5 class="card-title">@item.Name</h5>
+                <p class="card-text text-muted mb-1"><strong>Dept:</strong> @item.Department.Name</p>
+                <p class="card-text text-muted mb-1"><strong>Org:</strong> @item.Organization.Name</p>
+                <p class="card-text text-muted mb-1"><strong>Specialization:</strong> @item.Specialization</p>
+                <p class="card-text mb-2"><strong>Fee:</strong> @item.Fee</p>
+                <p class="card-text"><strong>Email:</strong> @item.Email</p>
+                <p class="card-text"><strong>Phone:</strong> @item.Phone</p>
+
+                <div class="d-grid gap-2 mt-3">
+                    <a href="@Url.Action("SelectDoctorFromList", "Appointment", new {
+                OrganizationId = item.OrganizationId,
+                DepartmentId = item.DepartmentId,
+                DoctorId = item.DoctorId
+            })"
+                       class="btn btn-primary">
+                        Book Appointment
+                    </a>
+
+                    @*<a href="@Url.Action("Edit", "Doctor", new { id = item.DoctorId })"
+           class="btn btn-outline-secondary">Edit</a>
+
+        <a href="@Url.Action("Delete", "Doctor", new { id = item.DoctorId })"
+           class="btn btn-outline-danger">Delete</a>*@
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    /* Optional: Make scrolling smooth for many cards */
+    .d-flex.flex-wrap {
+        overflow-y: auto;
+        max-height: 80vh;
+        padding: 10px;
     }
 
-</table>
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-
-@section Scripts {
-    <!-- jQuery (only once in _Layout) -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#doctorTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true
-            });
-        });
-    </script>
-}
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+</style>
