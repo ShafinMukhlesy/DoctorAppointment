@@ -6,10 +6,25 @@
 
 <h2 class="text-center mb-4">Doctor's List</h2>
 
-<div class="d-flex flex-wrap justify-content-center gap-4">
+<!-- 🔍 Filter Section -->
+<div class="container mb-4 text-center">
+    <label for="departmentFilter" class="form-label fw-bold">Filter by Department:</label>
+    <select id="departmentFilter" class="form-select w-auto d-inline-block">
+        <option value="all">-- All Departments --</option>
+        @foreach (var dept in Model.Select(d => d.Department).Distinct())
+        {
+            <option value="@dept.Name">@dept.Name</option>
+        }
+    </select>
+</div>
+
+<!-- Doctor Cards -->
+<div id="doctorList" class="d-flex flex-wrap justify-content-center gap-4">
     @foreach (var item in Model)
     {
-        <div class="card shadow-lg" style="width: 18rem; border-radius: 15px;">
+        <div class="card shadow-lg doctor-card"
+             data-department="@item.Department.Name"
+             style="width: 18rem; border-radius: 15px;">
             @if (!string.IsNullOrEmpty(item.Picture))
             {
                 <img src="@Url.Content(item.Picture)"
@@ -34,19 +49,13 @@
 
                 <div class="d-grid gap-2 mt-3">
                     <a href="@Url.Action("SelectDoctorFromList", "Appointment", new {
-                OrganizationId = item.OrganizationId,
-                DepartmentId = item.DepartmentId,
-                DoctorId = item.DoctorId
-            })"
+                        OrganizationId = item.OrganizationId,
+                        DepartmentId = item.DepartmentId,
+                        DoctorId = item.DoctorId
+                    })"
                        class="btn btn-primary">
                         Book Appointment
                     </a>
-
-                    @*<a href="@Url.Action("Edit", "Doctor", new { id = item.DoctorId })"
-           class="btn btn-outline-secondary">Edit</a>
-
-        <a href="@Url.Action("Delete", "Doctor", new { id = item.DoctorId })"
-           class="btn btn-outline-danger">Delete</a>*@
                 </div>
             </div>
         </div>
@@ -54,7 +63,6 @@
 </div>
 
 <style>
-    /* Optional: Make scrolling smooth for many cards */
     .d-flex.flex-wrap {
         overflow-y: auto;
         max-height: 80vh;
@@ -70,3 +78,27 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 </style>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#departmentFilter').change(function () {
+                var selectedDept = $(this).val().toLowerCase();
+
+                $('.doctor-card').each(function () {
+                    var cardDept = $(this).data('department').toLowerCase();
+
+                    console.log($(this)); // logs each jQuery object
+                    console.log($(this).data('department')); 
+
+                    if (selectedDept === 'all' || cardDept === selectedDept) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+}

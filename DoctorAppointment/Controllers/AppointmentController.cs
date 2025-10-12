@@ -65,7 +65,6 @@ namespace DoctorAppointment.Controllers
             ViewBag.SelectedDepartmentId = DepartmentId;
             ViewBag.SelectedDoctorId = DoctorId;
 
-            // Redirect to the existing "Book Appointment - Step 1" view
             return View("SelectDoctor");
         }
 
@@ -76,9 +75,6 @@ namespace DoctorAppointment.Controllers
             ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name");
             ViewBag.DepartmentId = new SelectList(db.Department, "DepartmentId", "Name");
             ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name");
-
-
-
 
             return View();
         }
