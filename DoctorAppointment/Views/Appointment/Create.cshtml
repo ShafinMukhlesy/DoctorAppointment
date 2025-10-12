@@ -10,8 +10,16 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Fill Patient Information</h3>
-            @Html.ActionLink("➕ Add New Patient", "CreateEdit", "Patient", null, new { @class = "btn btn-light btn-sm" })
+            @Html.ActionLink(
+            "➕ Add New Patient",
+            "CreateEdit",
+            "Patient",
+            new { returnUrl = Request.Url.AbsoluteUri }, // route values
+            new { @class = "btn btn-light btn-sm" }      // html attributes
+        )
+
         </div>
+
         <div class="card-body">
             @using (Html.BeginForm("Create", "Appointment", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
             {
@@ -99,6 +107,17 @@
     <script>
         $(document).ready(function () {
 
+
+            // Check if newPatientId exists in query string
+            const params = new URLSearchParams(window.location.search);
+            const newPatientId = params.get("newPatientId");
+
+            if (newPatientId) {
+                // Set dropdown value to new patient
+                $("#PatientId").val(newPatientId);
+                getGender(newPatientId);
+            }
+
             // Bind search event
             SearchPaitent();
 
@@ -144,25 +163,30 @@
                 });
             }
 
-            // Change event for patient dropdown
             $("#PatientId").on("change", function () {
+
                 var patientId = $(this).val();
+                getGender(patientId);
+            });
+            // Change event for patient dropdown
+            function getGender(patientId) {
 
                 if (patientId && patientId !== "") {
                     $.getJSON('@Url.Action("GetPatientGender", "Appointment")',
-                              { patientId: patientId },
-                              function (data) {
-                        if (data) {
-                            $("#Gender").val(data);
-                            $("#bookingAppointment").prop("disabled", false);
-                        } else {
-                            $("#Gender").val("");
-                        }
-                    });
+                        { patientId: patientId },
+                        function (data) {
+                            if (data) {
+                                $("#Gender").val(data);
+                                $("#bookingAppointment").prop("disabled", false);
+                            } else {
+                                $("#Gender").val("");
+                            }
+                        });
                 } else {
                     $("#Gender").val("");
                 }
-            });
+               
+            }
 
         });
     </script>

@@ -11,12 +11,17 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">@ViewBag.Title</h3>
+            <h3 style="display:none" class="mb-0">@ViewBag.ReturnUrl</h3>
+
+           
+
         </div>
         <div class="card-body">
             @using (Html.BeginForm("CreateEdit", "Patient", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.PatientId)
+                @Html.HiddenFor(m => m.returnUrl, (string)ViewBag.ReturnUrl)
 
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -83,9 +88,9 @@
                 </div>
 
                 @*<div class="mb-3">
-                    @Html.Label("Upload Patient Image", new { @class = "form-label" })
-                    <input type="file" name="ImageFile" class="form-control" />
-                </div>*@
+                @Html.Label("Upload Patient Image", new { @class = "form-label" })
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>*@
 
                 <div class="row mb-3">
                     <div class="col-md-6">

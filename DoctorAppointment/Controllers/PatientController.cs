@@ -19,8 +19,10 @@ namespace DoctorAppointment.Controllers
         }
 
         // GET: Patient/CreateEdit or Patient/CreateEdit/5
-        public ActionResult CreateEdit(int? id)
+        public ActionResult CreateEdit(int? id , string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             if (id == null) // Create mode
             {
                 return View(new Patient());
@@ -39,8 +41,7 @@ namespace DoctorAppointment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateEdit(Patient patient, HttpPostedFileBase ImageFile)
         {
-            if (ModelState.IsValid)
-            {
+           
 
                 if (ImageFile != null && ImageFile.ContentLength > 0)
                 {
@@ -86,11 +87,22 @@ namespace DoctorAppointment.Controllers
                     }
 
                     db.Entry(existingPatient).State = System.Data.Entity.EntityState.Modified;
+
+                   
                 }
 
-                db.SaveChanges();
+                 db.SaveChanges();
+
+                // **Always redirect to returnUrl if provided**
+                if (!string.IsNullOrEmpty(patient.returnUrl))
+                {
+                    var separator = patient.returnUrl.Contains("?") ? "&" : "?";
+                    var url = patient.returnUrl + separator + "newPatientId=" + patient.PatientId;
+                    return Redirect(url);
+                }
+
                 return RedirectToAction("Index");
-            }
+            
 
             return View(patient);
         }

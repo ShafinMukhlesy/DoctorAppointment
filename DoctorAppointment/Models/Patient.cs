@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -32,5 +33,8 @@ namespace DoctorAppointment.Models
         public string PatientImage { get; set; } // store file path like: "/Uploads/Patients/p123.png"
 
         public DateTime CreatedAt { get; set; } = DateTime.Now; // Track record creation
+
+        [NotMapped]
+        public string returnUrl { get; set; } 
     }
 }
