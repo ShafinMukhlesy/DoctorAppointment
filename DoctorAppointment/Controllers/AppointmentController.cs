@@ -235,9 +235,14 @@ namespace DoctorAppointment.Controllers
         public JsonResult GetPatientGender(int patientId)
         {
             var gender = db.Patients
-                .Where(p => p.PatientId == patientId)
-                .Select(p => p.Gender)
-                .FirstOrDefault();
+                        .Where(p => p.PatientId == patientId)
+                        .Select(p => new
+                        {
+                            p.PatientId,
+                            FullName = p.FirstName + " " + p.LastName,
+                            p.Gender
+                        })
+                        .FirstOrDefault();
 
             return Json(gender, JsonRequestBehavior.AllowGet);
         }

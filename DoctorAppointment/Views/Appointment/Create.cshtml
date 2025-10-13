@@ -206,8 +206,27 @@
                         { patientId: patientId },
                         function (data) {
                             if (data) {
-                                $("#Gender").val(data);
+                                console.log(data);
+
+                                // Set Gender
+                                $("#Gender").val(data.Gender);
                                 $("#bookingAppointment").prop("disabled", false);
+
+                                const ddl = $("#PatientId");
+
+                                // Check if option already exists
+                                if (ddl.find('option[value="' + data.PatientId + '"]').length === 0) {
+                                    // Add patient dynamically
+                                    ddl.append($('<option>', {
+                                        value: data.PatientId,
+                                        text: data.FullName,
+                                        selected: true
+                                    }));
+                                } else {
+                                    // Select existing option
+                                    ddl.val(data.PatientId);
+                                }
+
                             } else {
                                 $("#Gender").val("");
                             }
@@ -215,8 +234,8 @@
                 } else {
                     $("#Gender").val("");
                 }
-
             }
+
 
         });
     </script>
