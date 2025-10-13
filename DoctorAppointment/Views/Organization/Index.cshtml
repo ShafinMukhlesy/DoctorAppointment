@@ -20,7 +20,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Phone)
         </th>
-        <th></th>
+
     </tr>
 
 @foreach (var item in Model) {
@@ -34,11 +34,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Phone)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OrganizationId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OrganizationId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OrganizationId })
-        </td>
+
     </tr>
 }
 
