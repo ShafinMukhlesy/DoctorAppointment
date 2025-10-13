@@ -223,6 +223,7 @@
     <Content Include="Views\Bill\Create.cshtml" />
     <Content Include="Views\Appointment\Index.cshtml" />
     <Content Include="Views\Bill\Index.cshtml" />
+    <Content Include="Views\Doctor\DoctorListView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

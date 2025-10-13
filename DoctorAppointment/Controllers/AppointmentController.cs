@@ -57,7 +57,7 @@ namespace DoctorAppointment.Controllers
         public ActionResult SelectDoctorFromList(int OrganizationId, int DepartmentId, int DoctorId)
         {
 
-            ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name", OrganizationId);
+            ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name", 1);// 1 for labid
             ViewBag.DepartmentId = new SelectList(db.Department, "DepartmentId", "Name", DepartmentId);
             ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name", DoctorId);
 
@@ -72,7 +72,7 @@ namespace DoctorAppointment.Controllers
         // GET: Appointment
         public ActionResult SelectDoctor()
         {
-            ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name");
+            ViewBag.OrganizationId = new SelectList(db.Organization, "OrganizationId", "Name",1);
             ViewBag.DepartmentId = new SelectList(db.Department, "DepartmentId", "Name");
             ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name");
 
@@ -98,15 +98,7 @@ namespace DoctorAppointment.Controllers
                 AppointmentTime = TimeSpan.Parse(AppointmentTime)  // convert string to TimeSpan
             };
 
-            ViewBag.PatientId = new SelectList(
-                                                db.Patients.Select(p => new
-                                                {
-                                                    PatientId = p.PatientId,
-                                                    FullName = p.FirstName + " " + p.LastName
-                                                }),
-                                                "PatientId",
-                                                "FullName"
-                                            );
+            ViewBag.PatientId = null;
 
 
             return View(model);

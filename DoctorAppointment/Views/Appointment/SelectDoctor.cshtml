@@ -39,8 +39,8 @@
                                             <tr>
                                                 <th>Day</th>
                                                 <th>Time</th>
-                                                <th>Max Patients</th>
-                                                <th>Slot Duration</th>
+                                                @*<th>Max Patients</th>
+                                                <th>Slot Duration</th>*@
                                             </tr>
                                         </thead>
                                         <tbody id="scheduleTableBody"></tbody>
@@ -56,7 +56,7 @@
                             <div class="card-body">
                                 <h5 class="mb-3 text-secondary">Select Organization & Doctor</h5>
 
-                                <div class="mb-3">
+                                <div class="mb-3" style="display:none">
                                     @Html.Label("Organization", new { @class = "form-label fw-bold" })
                                     @Html.DropDownList("OrganizationId", (SelectList)ViewBag.Organizations, "-- Select Organization --", new { @class = "form-control" })
                                 </div>
@@ -142,7 +142,7 @@
     <script>
         $(document).ready(function () {
 
-
+          
 
         $('#AppointmentDate').datepicker({
             format: 'yyyy-mm-dd',
@@ -156,6 +156,8 @@
         var selectedOrg = '@ViewBag.SelectedOrganizationId';
         var selectedDept = '@ViewBag.SelectedDepartmentId';
         var selectedDoctor = '@ViewBag.SelectedDoctorId';
+
+            getdepartments($("#OrganizationId").val());
 
         if (selectedOrg) {
             $('#OrganizationId').val(selectedOrg);
@@ -229,10 +231,14 @@
             validateForm();
         });
 
-    // Existing code to load Departments, Doctors, Doctor Details, and Time Slots
-        $("#OrganizationId").change(function () {
-            var orgId = $(this).val();
-            $("#DepartmentId").html('<option>Loading...</option>');
+            // Existing code to load Departments, Doctors, Doctor Details, and Time Slots
+
+            function getdepartments(orgId) {
+
+                var orgId = orgId;
+
+                $("#DepartmentId").html('<option>Loading...</option>');
+
             $.getJSON('@Url.Action("GetDepartments")', { organizationId: orgId }, function (data) {
                 var options = '<option>-- Select Department --</option>';
                 $.each(data, function (i, dept) {
@@ -243,7 +249,12 @@
                 validateForm();
                 loadTimeSlots();
             });
-        });
+            }
+
+        //$("#OrganizationId").change(function () {
+        //    var orgId = $(this).val();
+
+        //});
 
         $("#DepartmentId").change(function () {
                 $("#scheduleTableBody").html("<tr><td colspan='4' class='text-muted text-center'>No schedule available</td></tr>");
@@ -316,8 +327,8 @@
                                 "<tr>" +
                                     "<td>" + sch.DayOfWeek + "</td>" +
                                     "<td>" + sch.StartTime + " - " + sch.EndTime + "</td>" +
-                                    "<td>" + sch.MaxPatients + "</td>" +
-                                    "<td>" + sch.SlotDuration + "</td>" +
+                                    //"<td>" + sch.MaxPatients + "</td>" +
+                                    //"<td>" + sch.SlotDuration + "</td>" +
                                 "</tr>";
 
                             const dayIndex = getDayIndex(sch.DayOfWeek);

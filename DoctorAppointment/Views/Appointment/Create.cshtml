@@ -48,8 +48,9 @@
                     <div class="col-md-6">
                         @Html.Label("Patient", htmlAttributes: new { @class = "form-label" })
 
-                        @Html.DropDownList("PatientId", null, "-- Select Patient --", new { @class = "form-select" })
-                        @Html.ValidationMessageFor(model => model.PatientId, "", new { @class = "text-danger" })
+                        <select name="PatientId" id="PatientId" class="form-select">
+                            <option value="">-- Select Patient --</option>
+                        </select>
                     </div>
                 </div>
 
@@ -104,8 +105,37 @@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function () {
+
+                $("form").on("submit", function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function () {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Booking Completed",
+                            text: "Your appointment has been booked successfully!",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.href = '@Url.Action("SelectDoctor", "Appointment")';
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Something went wrong. Please try again."
+                        });
+                    }
+                });
+            });
 
 
             // Check if newPatientId exists in query string
@@ -185,7 +215,7 @@
                 } else {
                     $("#Gender").val("");
                 }
-               
+
             }
 
         });

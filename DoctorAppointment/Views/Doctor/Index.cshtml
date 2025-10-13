@@ -16,14 +16,26 @@
             <option value="@dept.Name">@dept.Name</option>
         }
     </select>
+
+    <label for="dateFilter" class="form-label fw-bold me-2">Filter by Date:</label>
+    <input type="date" id="dateFilter" class="form-control w-auto d-inline-block" />
+
 </div>
 
 <!-- Doctor Cards -->
 <div id="doctorList" class="d-flex flex-wrap justify-content-center gap-4">
     @foreach (var item in Model)
     {
+
+
+        var availableDays = string.Join(",", item.DoctorSchedules.Select(s => s.DayOfWeek.ToString()));
+
+
+
+
         <div class="card shadow-lg doctor-card"
              data-department="@item.Department.Name"
+             data-days="@availableDays"
              style="width: 18rem; border-radius: 15px;">
             @if (!string.IsNullOrEmpty(item.Picture))
             {
@@ -83,22 +95,35 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#departmentFilter').change(function () {
-                var selectedDept = $(this).val().toLowerCase();
+
+            function filterDoctors() {
+                var selectedDept = $('#departmentFilter').val().toLowerCase();
+                var selectedDate = $('#dateFilter').val();
+
+                // Get the weekday name from the selected date (e.g., "Monday")
+                var selectedDay = '';
+                if (selectedDate) {
+                    var dateObj = new Date(selectedDate);
+                    selectedDay = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+                }
 
                 $('.doctor-card').each(function () {
                     var cardDept = $(this).data('department').toLowerCase();
+                    var availableDays = $(this).data('days'); // e.g. "Monday,Wednesday,Friday"
 
-                    console.log($(this)); // logs each jQuery object
-                    console.log($(this).data('department')); 
+                    var matchesDept = (selectedDept === 'all' || cardDept === selectedDept);
+                    var matchesDate = (!selectedDate || availableDays.includes(selectedDay));
 
-                    if (selectedDept === 'all' || cardDept === selectedDept) {
+                    if (matchesDept && matchesDate) {
                         $(this).show();
                     } else {
                         $(this).hide();
                     }
                 });
-            });
+            }
+
+            $('#departmentFilter, #dateFilter').on('change', filterDoctors);
         });
     </script>
 }
+

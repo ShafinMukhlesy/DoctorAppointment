@@ -16,6 +16,14 @@ namespace DoctorAppointment.Controllers
         // GET: Doctor
         public ActionResult Index()
         {
+            var doctorinfo = db.Doctor.Include(d => d.Department).Include(d => d.Organization).Include(d=>d.DoctorSchedules);
+            return View(doctorinfo);
+
+        }
+
+
+        public ActionResult DoctorListView()
+        {
             var doctorinfo = db.Doctor.Include(d => d.Department).Include(d => d.Organization);
             return View(doctorinfo);
 
