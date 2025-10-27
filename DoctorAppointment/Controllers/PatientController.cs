@@ -80,8 +80,18 @@ namespace DoctorAppointment.Controllers
                     existingPatient.Weight = patient.Weight;
                     existingPatient.Height = patient.Height;
                     existingPatient.MedicalHistory = patient.MedicalHistory;
+                    existingPatient.NID = patient.NID;
+                    existingPatient.Age = patient.Age;
+                    existingPatient.Title = patient.Title;
+                    existingPatient.Religion = patient.Religion;
+                    existingPatient.Nationality = patient.Nationality;
+                    existingPatient.Occupation = patient.Occupation;
+                    existingPatient.GuardianType = patient.GuardianType;
+                    existingPatient.GuardianName = patient.GuardianName;
+                    existingPatient.PassportNo = patient.PassportNo;
+                    existingPatient.MaritalStatus = patient.MaritalStatus;
 
-                    if (!string.IsNullOrEmpty(patient.PatientImage))
+                if (!string.IsNullOrEmpty(patient.PatientImage))
                     {
                         existingPatient.PatientImage = patient.PatientImage;
                     }

@@ -13,19 +13,33 @@
             <h3 class="mb-0">@ViewBag.Title</h3>
             <h3 style="display:none" class="mb-0">@ViewBag.ReturnUrl</h3>
 
-           
+
 
         </div>
         <div class="card-body">
             @using (Html.BeginForm("CreateEdit", "Patient", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
                 @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.HiddenFor(m => m.PatientId)
                 @Html.HiddenFor(m => m.returnUrl, (string)ViewBag.ReturnUrl)
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(m => m.FirstName, new { @class = "form-label" })
+                        @Html.LabelFor(m => m.NID, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.NID, new { @class = "form-control", placeholder = "Enter NID No." })
+                        @Html.ValidationMessageFor(m => m.NID, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Title, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Enter Title" })
+                        @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.FirstName, "First Name*", new { @class = "form-label" })
                         @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Enter first name" })
                         @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
                     </div>
@@ -36,10 +50,118 @@
                     </div>
                 </div>
 
+
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label" })
+
+
+                        @Html.LabelFor(m => m.DateOfBirth, "Date Of Birth *", new { @class = "form-label" })
+                        @*@Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date", id = "DateOfBirth" })*@
+                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "DateOfBirth" })
+
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Age, "Age *", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Age, new { @class = "form-control", type = "number", step = "0.1", placeholder = "Age", id = "Age" })
+                        @Html.ValidationMessageFor(m => m.Age, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Nationality, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Nationality, new SelectList(new[] {"Bangladeshi",
+                                                                                            "Indian",
+                                                                                            "Pakistani",
+                                                                                            "Nepali",
+                                                                                            "Sri Lankan",
+                                                                                            "Malaysian",
+                                                                                            "Indonesian",
+                                                                                            "Chinese",
+                                                                                            "Japanese",
+                                                                                            "Korean",
+                                                                                            "Thai",
+                                                                                            "Filipino",
+                                                                                            "Singaporean",
+                                                                                            "American",
+                                                                                            "British",
+                                                                                            "Canadian",
+                                                                                            "Australian",
+                                                                                            "German",
+                                                                                            "French",
+                                                                                            "Italian",
+                                                                                            "Spanish",
+                                                                                            "Turkish",
+                                                                                            "Saudi",
+                                                                                            "Egyptian",
+                                                                                            "South African",
+                                                                                            "Others" }), "-- Select Nationality --", new { @class = "form-select" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.BloodGroup, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.BloodGroup, new { @class = "form-control", placeholder = "A+, O-, AB+" })
+                    </div>
+
+
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Gender, "Gender *", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "-- Select Gender --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Religion, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Religion, new SelectList(new[] { "Islam", "Hinduism", "Christianity", "Buddhism", "Other" }), "-- Select Religion --", new { @class = "form-select" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.MaritalStatus, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.MaritalStatus, new SelectList(new[] { "Single", "Married", "Divorced", "Widowed", "Other" }), "-- Select Marital Status --", new { @class = "form-select" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Occupation, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Occupation, new { @class = "form-control", placeholder = "Enter Occupation" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.GuardianType, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.GuardianType, new SelectList(new[] {   "Father",
+                                                                                            "Mother",
+                                                                                            "Husband",
+                                                                                            "Wife",
+                                                                                            "Brother",
+                                                                                            "Sister",
+                                                                                            "Uncle",
+                                                                                            "Aunt",
+                                                                                            "Grandfather",
+                                                                                            "Grandmother",
+                                                                                            "Legal Guardian",
+                                                                                            "Other" }), "-- Select Guardian Type --", new { @class = "form-select" })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.GuardianName, "Guardian Name", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.GuardianName, new { @class = "form-control", placeholder = "Enter Guardian Name" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PhoneNumber, "Phone Number *", new { @class = "form-label" })
                         @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Enter phone number" })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+
                     </div>
                     <div class="col-md-6">
                         @Html.LabelFor(m => m.Email, new { @class = "form-label" })
@@ -49,48 +171,18 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        @Html.LabelFor(m => m.Gender, new { @class = "form-label" })
-                        @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "-- Select Gender --", new { @class = "form-select" })
+                        @Html.LabelFor(m => m.PassportNo, "PassPort Number", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.PassportNo, new { @class = "form-control", placeholder = "Enter PassPort Number" })
+                        @Html.ValidationMessageFor(m => m.PassportNo, "", new { @class = "text-danger" })
+
                     </div>
                     <div class="col-md-6">
-                        @Html.LabelFor(m => m.DateOfBirth, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date" })
-                    </div>
-
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.Weight, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", type = "number", step = "0.1", placeholder = "kg" })
-                    </div>
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.Height, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.Height, new { @class = "form-control", placeholder = "0'0" })
+                        @Html.LabelFor(m => m.Address, "Address *", new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 2 })
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.BloodGroup, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.BloodGroup, new { @class = "form-control", placeholder = "A+, O-, AB+" })
-                    </div>
-                </div>
 
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.Address, new { @class = "form-label" })
-                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 2 })
-                </div>
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.MedicalHistory, new { @class = "form-label" })
-                    @Html.TextAreaFor(m => m.MedicalHistory, new { @class = "form-control", rows = 3 })
-                </div>
-
-                @*<div class="mb-3">
-                @Html.Label("Upload Patient Image", new { @class = "form-label" })
-                <input type="file" name="ImageFile" class="form-control" />
-            </div>*@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -114,3 +206,37 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // When Date of Birth changes → calculate Age
+        document.getElementById("DateOfBirth").addEventListener("change", function () {
+            const dob = new Date(this.value);
+            if (!isNaN(dob)) {
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+
+                // adjust if birthday hasn't happened yet this year
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById("Age").value = age;
+            }
+        });
+
+        // When Age changes → calculate Date of Birth
+        document.getElementById("Age").addEventListener("input", function () {
+            const age = parseFloat(this.value);
+            if (!isNaN(age)) {
+                const today = new Date();
+                const birthYear = today.getFullYear() - Math.floor(age);
+                const dob = new Date(today.setFullYear(birthYear));
+                document.getElementById("DateOfBirth").value = dob.toISOString().split('T')[0];
+            }
+        });
+    </script>
+}
