@@ -74,6 +74,22 @@
                     </div>
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.IsActive, "Status", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownListFor(model => model.IsActive,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Active", Value = "true" },
+                                new SelectListItem { Text = "Inactive", Value = "false" }
+                            },
+                            "-- Select Status --",
+                            new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
                 <div class="d-flex justify-content-end">
                     <input type="submit" value="Save Doctor" class="btn btn-success me-2" />
                     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })

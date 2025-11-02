@@ -32,6 +32,8 @@ namespace DoctorAppointment.Models
         public int DepartmentId { get; set; }
         public int OrganizationId { get; set; }
 
+        public bool IsActive { get; set; } 
+
         // Navigation Properties
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }

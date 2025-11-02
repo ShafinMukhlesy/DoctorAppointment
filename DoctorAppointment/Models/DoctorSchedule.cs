@@ -34,5 +34,7 @@ namespace DoctorAppointment.Models
 
         // Slot duration in minutes (like 15 mins)
         public int SlotDuration { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

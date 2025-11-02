@@ -4,65 +4,85 @@
     ViewBag.Title = Model.ScheduleId == 0 ? "Create Schedule" : "Edit Schedule";
 }
 
-<h2>@ViewBag.Title</h2>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-@using (Html.BeginForm("CreateOrEdit", "DoctorSchedule", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.ScheduleId)
-
-    <div class="form-horizontal shadow p-4 rounded bg-light">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.DoctorId, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("DoctorId", null, "-- Select Doctor --", new { @class = "form-control" })
-            </div>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">@ViewBag.Title</h3>
+            @Html.ActionLink("← Back to List", "Index", null, new { @class = "btn btn-light" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.DayOfWeek, "Day", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.DayOfWeek,
-                    new SelectList(Enum.GetValues(typeof(DayOfWeek))),
-                    "-- Select Day --", new { @class = "form-control" })
-            </div>
-        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("CreateOrEdit", "DoctorSchedule", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ScheduleId)
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.StartTime)
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.StartTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.DoctorId, new { @class = "form-label" })
+                        @Html.DropDownList("DoctorId", null, "-- Select Doctor --", new { @class = "form-select" })
+                    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.EndTime)
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.EndTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
-            </div>
-        </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.DayOfWeek, "Day", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.DayOfWeek,
+                            new SelectList(Enum.GetValues(typeof(DayOfWeek))),
+                            "-- Select Day --", new { @class = "form-select" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.MaxPatients)
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.MaxPatients, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.StartTime, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.StartTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
+                    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.SlotDuration, "Slot Duration (minutes)")
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.SlotDuration, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.EndTime, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.EndTime, "{0:hh\\:mm}", new { type = "time", @class = "form-control" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-primary">Save</button>
-                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
-            </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.MaxPatients, new { @class = "form-label" })
+                        @Html.EditorFor(m => m.MaxPatients, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.SlotDuration, "Slot Duration (minutes)", new { @class = "form-label" })
+                        @Html.EditorFor(m => m.SlotDuration, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <!-- ✅ Active / Inactive Toggle -->
+                <div class="form-check form-switch mb-4">
+                    @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", id = "IsActiveSwitch" })
+                    <label class="form-check-label" for="IsActiveSwitch">Active</label>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success me-2">💾 Save</button>
+                    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                </div>
+            }
         </div>
     </div>
-}
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+</style>

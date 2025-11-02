@@ -1,23 +1,25 @@
 ﻿@model DoctorAppointment.Models.Department
 
 @{
-    ViewBag.Title = "Create Department";
-    ViewBag.FormTitle = "Create Department";
-    ViewBag.SubmitText = "Save Department";
+    ViewBag.Title = "Edit Department";
+    ViewBag.FormTitle = "Edit Department";
+    ViewBag.SubmitText = "Update Department";
 }
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
 <div class="container mt-5">
     <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
-            <h3 class="mb-0"><i class="bi bi-building me-2"></i>@ViewBag.FormTitle</h3>
+        <div class="card-header bg-warning text-dark py-3 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>@ViewBag.FormTitle</h3>
         </div>
 
         <div class="card-body px-4 py-4">
-            @using (Html.BeginForm("Create", "Department", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            @using (Html.BeginForm("Edit", "Department", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
             {
                 @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.DepartmentId)
                 @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
 
                 <div class="row mb-4">
@@ -52,8 +54,8 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-success btn-lg px-4 me-2">
-                        <i class="bi bi-check-circle me-1"></i> @ViewBag.SubmitText
+                    <button type="submit" class="btn btn-warning btn-lg px-4 me-2 text-white">
+                        <i class="bi bi-save me-1"></i> @ViewBag.SubmitText
                     </button>
                     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-outline-secondary btn-lg px-4" })
                 </div>
@@ -63,7 +65,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
 <style>
     body {
@@ -83,14 +84,14 @@
         color: #344767;
     }
 
-    .btn-success {
-        background-color: #198754;
+    .btn-warning {
+        background-color: #f0ad4e;
         border: none;
         transition: all 0.3s ease;
     }
 
-        .btn-success:hover {
-            background-color: #157347;
+        .btn-warning:hover {
+            background-color: #ec971f;
             transform: translateY(-2px);
         }
 

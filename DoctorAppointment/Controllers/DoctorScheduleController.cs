@@ -29,7 +29,9 @@ namespace DoctorAppointment.Controllers
             }
 
             // Edit existing schedule
+
             DoctorSchedule schedule = db.DoctorSchedules.Find(id);
+            ViewBag.DoctorId = new SelectList(db.Doctor, "DoctorId", "Name", schedule.DoctorId);
             if (schedule == null) return HttpNotFound();
 
             return View(schedule);

@@ -10,7 +10,7 @@ namespace DoctorAppointment.Models
     [Table("Department")]
     public class Department
     {
-        
+
         public int DepartmentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,5 +21,7 @@ namespace DoctorAppointment.Models
 
         [ForeignKey("OrganizationId")]
         public virtual Organization Organization { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

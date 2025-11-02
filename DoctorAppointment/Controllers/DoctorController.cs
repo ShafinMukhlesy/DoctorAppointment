@@ -95,7 +95,7 @@ namespace DoctorAppointment.Controllers
                 existingDoctor.DepartmentId = doctor.DepartmentId;
                 existingDoctor.OrganizationId = doctor.OrganizationId;
                 existingDoctor.Fee = doctor.Fee;
-
+                existingDoctor.IsActive = doctor.IsActive;
                 if (PictureFile != null && PictureFile.ContentLength > 0)
                 {
                     var fileName = Path.GetFileName(PictureFile.FileName);
